@@ -73,6 +73,7 @@ public class AnalyticsManager : MonoBehaviour
     /// </summary>
     /// <param name="activity">What the user was going</param>
     /// <param name="agent">The users name</param>
+    /// <param name="email">The users email</param>
     /// <param name="verbName">How they did something (eg completed)</param>
     /// <param name="_type">The type or category of activity</param>
     /// <param name="time">Time since scene began if left null </param>
