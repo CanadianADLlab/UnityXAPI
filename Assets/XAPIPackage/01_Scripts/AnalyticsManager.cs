@@ -131,7 +131,10 @@ public class AnalyticsManager : MonoBehaviour
         JObject jObj = jString.toJObject();
 
         var activityOBJ = new Activity(jObj.Value<JObject>("object"));
-        activityOBJ.definition.type = new Uri("http://" + _type);
+        if (_type != string.Empty)
+        {
+            activityOBJ.definition.type = new Uri("http://" + _type);
+        }
 
         var result = new Result();
 
