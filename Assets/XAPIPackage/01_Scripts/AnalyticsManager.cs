@@ -64,9 +64,6 @@ public class AnalyticsManager : MonoBehaviour
                 StoreSecretKey
                );
             }
-            print("What are these values " + StoreKey + " and this " + StoreSecretKey);
-            CreateStatement("Stuff", "Shaun2", "Shaunmcgowanhasanemail@notrealemail.ca","Experienced", "Activity");
-
         }));
 
     }
