@@ -1,6 +1,6 @@
 Setting up XAPI for unity
 
-1) Take the package from this repo and drop it into any project <br>
+1) Take the package from the root of this repo (named: XAPIUnityPackage.unitypackage) and drop it into any project <br>
 2) Drop the AnalyticsManager prefab into anyscene (It is don't destroy on load so it only really needs to be in the first scene)
 3) Now to create a statement all you need to do is reference the singleton.
 4) A statment looks as follow : AnalyticsManager.analyticsManager.CreateStatement("Activity","Name","Email","Verb");
