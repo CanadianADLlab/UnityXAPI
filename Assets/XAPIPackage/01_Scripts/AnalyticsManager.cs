@@ -16,7 +16,10 @@ using UnityEngine.Networking;
 public class AnalyticsManager : MonoBehaviour
 {
     public String URL = "https://lrs.ongarde.net/data/xAPI";
-    public string agent = "OTHER";//represents the recruiting center
+    
+    // Keys, default ones point to a dummy LRS
+    public string StoreKey = "9323f1983e98c9c6f81fa8d2977ec0a1753102b9";
+    public string StoreSecretKey = "665919060272ed8307cc3c1fd07eeaa7aab5d079"; 
 
     bool hasConnection = false;
 
@@ -57,10 +60,12 @@ public class AnalyticsManager : MonoBehaviour
                 print("Internet connection");
                 lrs = new RemoteLRS(
                 URL,
-               "1ba5bde68aa8aa71694b3f7ef3a5f5f06fa51d85",
-               "ccfe50fbd8e158e2b938f8d60fd901d337c9f586"
+                StoreKey,
+                StoreSecretKey
                );
             }
+            print("What are these values " + StoreKey + " and this " + StoreSecretKey);
+            CreateStatement("Stuff", "Shaun2", "Shaunmcgowanhasanemail@notrealemail.ca","Experienced", "Activity");
 
         }));
 
@@ -75,12 +80,12 @@ public class AnalyticsManager : MonoBehaviour
     /// <param name="_type">The type or category of activity</param>
     /// <param name="time">Time since scene began if left null </param>
     /// <param name="newDateTime">If you want to override the datetime rather than it being datetime.now</param>
-    public void CreateStatement(string activity = "", string agent = "", string verbName = "", string _type = "", float time = 0, string newDateTime = "")
+    public void CreateStatement(string activity = "" ,string agent = "",string email = "", string verbName = "", string _type = "", float time = 0, string newDateTime = "")
     {
-        StartCoroutine(QueueLRSStatement(activity, agent, verbName, _type, time, newDateTime));
+        StartCoroutine(QueueLRSStatement(activity, agent, email, verbName, _type, time, newDateTime));
     }
 
-    public IEnumerator QueueLRSStatement(string activity = "", string agent = "", string verbName = "",string _type = "",float time = 0, string newDateTime = "")
+    public IEnumerator QueueLRSStatement(string activity = "", string agent = "", string email = "",string verbName = "",string _type = "",float time = 0, string newDateTime = "")
     {
 
         var actor = new Agent();
@@ -94,7 +99,27 @@ public class AnalyticsManager : MonoBehaviour
             activity = "NOACTIVITY";
         }
 
-        actor.mbox = "mailto:" + agent;
+        if(time == 0)
+        {
+            time = Time.timeSinceLevelLoad;
+        }
+
+        if(email == String.Empty)
+        {
+            actor.mbox = "mailto:" + agent;
+        }
+        else
+        {
+            if (!@email.Contains("mailto:"))
+            {
+                actor.mbox = "mailto:" + email;
+            }
+            else
+            {
+                actor.mbox = email;
+            }
+        }
+
         actor.name = agent;
         var verb = new Verb();
         verb.id = new Uri("http://adlnet.gov/expapi/verbs/" + verbName);
@@ -109,7 +134,7 @@ public class AnalyticsManager : MonoBehaviour
         JObject jObj = jString.toJObject();
 
         var activityOBJ = new Activity(jObj.Value<JObject>("object"));
-        activityOBJ.definition.type = new Uri("http://not/real/" + _type);
+        activityOBJ.definition.type = new Uri("http://" + _type);
 
         var result = new Result();
 
@@ -121,7 +146,7 @@ public class AnalyticsManager : MonoBehaviour
         if (newDateTime.Equals(String.Empty)) // if the datetime doesn't exist, it is a new statement
         {
             statement.timestamp = DateTime.Now;
-            SaveData.Instance.AddStatement(activity, agent, verbName, _type, DateTime.Now.ToString("O"), time); // if it is a new statment we will keep track of it to save in the future
+            SaveData.Instance.AddStatement(activity, agent, actor.mbox, verbName, _type, DateTime.Now.ToString("O"), time); // if it is a new statment we will keep track of it to save in the future
         }
         else
         {
@@ -171,8 +196,17 @@ public class AnalyticsManager : MonoBehaviour
     {
         totalStatements.Clear(); // We clear when it succeeds
     }
+
+    // If android use application pause, it gets called when app is closed also. For some reason on app quit does not work on android
     private void OnApplicationPause(bool pause)
     {
+        StartCoroutine(UploadStatements());
+    }
+
+    // Use for regular desktop builds
+    private void OnApplicationQuit()
+    {
+        
         StartCoroutine(UploadStatements());
     }
 

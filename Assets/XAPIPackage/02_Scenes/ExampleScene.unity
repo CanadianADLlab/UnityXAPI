@@ -339,7 +339,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   URL: https://lrs.ongarde.net/data/xAPI
-  agent: OTHER
+  StoreKey: 9323f1983e98c9c6f81fa8d2977ec0a1753102b9
+  StoreSecretKey: 665919060272ed8307cc3c1fd07eeaa7aab5d079
 --- !u!4 &1644467951
 Transform:
   m_ObjectHideFlags: 0

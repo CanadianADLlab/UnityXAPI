@@ -33,7 +33,7 @@ public class SaveData : MonoBehaviour
     }
 
 
-    public void AddStatement(string activityName, string agent, string verbName ,string _type,string dateTime, float time = 0)
+    public void AddStatement(string activityName, string agent,string email,string verbName ,string _type,string dateTime, float time = 0)
     {
       
         XAPIStatementData data = new XAPIStatementData();
@@ -47,6 +47,7 @@ public class SaveData : MonoBehaviour
     
         data.activityName = activityName;
         data.agent = agent;
+        data.email = email;
         data.verbName = verbName;
         data.type = _type;
         data.statementDateTime = dateTime;
@@ -88,7 +89,7 @@ public class SaveData : MonoBehaviour
                 file.Close();
                 foreach (XAPIStatementData newData in data.XAPIList)
                 {
-                    AddStatement(newData.activityName, newData.agent, newData.verbName, newData.type, newData.statementDateTime, newData.timeSpent); // if existy we add it to the list
+                    AddStatement(newData.activityName, newData.agent,newData.email ,newData.verbName, newData.type, newData.statementDateTime, newData.timeSpent); // if existy we add it to the list
                 }
                 yield return null;
                 StartCoroutine(LoadOldStatements());
@@ -111,7 +112,7 @@ public class SaveData : MonoBehaviour
         {
             foreach (XAPIStatementData statement in saveInfo.XAPIList)
             {
-                StartCoroutine(AnalyticsManager.analyticsManager.QueueLRSStatement(statement.activityName, statement.agent, statement.verbName,statement.type ,statement.timeSpent, statement.statementDateTime));
+                StartCoroutine(AnalyticsManager.analyticsManager.QueueLRSStatement(statement.activityName, statement.agent,statement.email, statement.verbName,statement.type ,statement.timeSpent, statement.statementDateTime));
             }
         }
         yield return null; 
@@ -133,6 +134,7 @@ class XAPIStatementData
 {
     public string activityName;
     public string agent;
+    public string email;
     public string verbName;
     public string type;
     public float timeSpent;
