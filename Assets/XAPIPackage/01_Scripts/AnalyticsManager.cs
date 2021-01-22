@@ -15,11 +15,11 @@ using UnityEngine.Networking;
 /// </summary>
 public class AnalyticsManager : MonoBehaviour
 {
-    public String URL = "https://lrs.ongarde.net/data/xAPI";
+    public String URL = "";
     
     // Keys, default ones point to a dummy LRS
-    public string StoreKey = "9323f1983e98c9c6f81fa8d2977ec0a1753102b9";
-    public string StoreSecretKey = "665919060272ed8307cc3c1fd07eeaa7aab5d079"; 
+    public string StoreKey = "";
+    public string StoreSecretKey = ""; 
 
     bool hasConnection = false;
 
